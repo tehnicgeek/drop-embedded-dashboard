@@ -1,0 +1,26 @@
+{
+  "name": "OverlappingMarkerSpiderfier",
+  "homepage": "https://github.com/jawj/OverlappingMarkerSpiderfier",
+  "authors": [
+    "George MacKerron"
+  ],
+  "description": "Deals with overlapping markers in Google Maps JS API v3, Google Earth-style",
+  "license": "MIT",
+  "ignore": [
+    "node_modules",
+    "bower_components"
+  ],
+  "devDependencies": {
+    "closure-compiler": "https://closure-compiler.googlecode.com/files/compiler-20131014.zip",
+    "google-maps-externs": "https://github.com/yagoferrer/google-maps-closure-externs.git#3.7"
+  },
+  "_release": "0.3.3b",
+  "_resolution": {
+    "type": "tag",
+    "tag": "0.3.3b",
+    "commit": "874768bd98e82b05c4c4b32981237288e6d24c23"
+  },
+  "_source": "https://github.com/yagoferrer/OverlappingMarkerSpiderfier.git",
+  "_target": "0.3.3b",
+  "_originalSource": "https://github.com/yagoferrer/OverlappingMarkerSpiderfier.git"
+}

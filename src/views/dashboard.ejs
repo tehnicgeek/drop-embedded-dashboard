@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Lora Server - Dashboard</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/main">LoRa Dashboard</a>
+            </div>
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-right top-nav">
+               
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Admin <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                         <li>
+                            <a href="index.html"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active">
+                        <a href="/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="/main"><i class="fa fa-fw fa-database"></i> Live Raw Data</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            LoRa Server
+                        </h1>
+                        <ol class="breadcrumb">
+                            <li>
+                                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+                            </li>
+                            <li class="active">
+                                <i class="fa fa-file"></i> Live Data Feed
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-bar mr-1"></i>
+                                Vibration Data
+                            </div>
+                            <div class="card-body"><canvas id="line-chart" width="800" height="250"></canvas></div>
+                            <div class="card-footer small text-muted">Last Updated at: <span id="time1"></span></div>
+                        </div>
+                    </div>
+                </div>
+                <br/><br/>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-bar mr-1"></i>
+                                Temperature/ Humidity
+                            </div>
+                            <div class="card-body"><canvas id="line-chart2" width="800" height="450"></canvas></div>
+                            <div class="card-footer small text-muted">Last Updated at: <span id="time2"></span></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-bar mr-1"></i>
+                                Sound
+                            </div>
+                            <div class="card-body"><canvas id="line-chart3" width="800" height="450"></canvas></div>
+                            <div class="card-footer small text-muted">Last Updated at: <span id="time3"></span></div>
+                        </div>
+                    </div>
+                </div>
+                <br/><br/>
+                <div class="row" style="padding-bottom: 500px;">    
+                    <div class="col-lg-12 col-xs-12 col-md-12 col-sm-12" style="height: 100%;">
+                        <div id="maindatafeed" class="list-group">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+        </div>
+    </div>
+    <!-- /#wrapper -->
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+    <script src="js/bootpag.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
+    <script>
+        let data = new Array();
+
+        let tempData = new Array(20).fill(0);
+        let humData = new Array(20).fill(0);
+        let soundData = new Array(20).fill(0);
+        let vibxData = new Array(20).fill(0);
+        let vibyData = new Array(20).fill(0);
+        let vibzData = new Array(20).fill(0);
+
+        function makeid(length) {
+            var result           = '';
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        // Create a client instance
+        client = new Paho.MQTT.Client("127.0.0.1", Number(9001), "cliesdfsdfntId" + makeid(5));
+
+        // set callback handlers
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        // connect the client
+        client.connect({onSuccess:onConnect});
+
+
+        // called when the client connects
+        function onConnect() {
+            // Once a connection has been made, make a subscription and send a message.
+            console.log("Connected to MQTT Broker");
+            client.subscribe("application/1/device/+/event/up");
+            // message = new Paho.MQTT.Message("Hello");
+            // message.destinationName = "World";
+            // client.send(message);
+        }
+
+        // called when the client loses its connection
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        }
+
+        var render = function (template, node) {
+            if (!node) return;
+            node.innerHTML = template;
+        };
+
+
+        // called when a message arrives
+        function onMessageArrived(message) {
+            console.log("onMessageArrived:"+message.payloadString);
+            var start = '<button type="button" class="list-group-item">';
+            var end = '</button>'
+            var jsonParsed = JSON.parse(message.payloadString);
+            datas = "Data Received: " + atob(jsonParsed.data) + "<p></p>Raw Data: " + message.payloadString;
+
+            data.push(start + datas + end)
+            var template = "";
+
+            for(var i = data.length; i >= 0; i--)
+            {
+                if(data[i] === undefined) continue;
+                template += data[i];
+            }
+
+            if(data.length === 10) data.shift();
+
+            render(template, document.querySelector('#maindatafeed'));
+
+            receivedData = jsonParsed.data;
+
+            if(receivedData.length > 40)
+            {
+                parsedData = atob(receivedData);
+                if(parsedData.substring(0,2) === "9A")
+                {
+                    dateString = new Date();
+                    document.getElementById("time1").innerHTML = dateString;
+                    document.getElementById("time2").innerHTML = dateString;
+                    document.getElementById("time3").innerHTML = dateString;
+
+                    parsedData = parsedData.replace("9A",'')
+                    parsedData = parsedData.replace("F0",'')
+                    var splitData = parsedData.split("|");           
+
+                    tempData.shift();    
+                    tempData.push(parseFloat(splitData[0]).toFixed(2));
+
+                    humData.shift();
+                    humData.push(parseFloat(splitData[1]).toFixed(2));
+
+                    soundData.shift();
+                    soundData.push(parseFloat(splitData[2]).toFixed(2));
+
+                    vibxData.shift();
+                    vibxData.push(parseFloat(splitData[3]).toFixed(2));
+
+                    vibyData.shift();
+                    vibyData.push(parseFloat(splitData[4]).toFixed(2));
+
+                    vibzData.shift();
+                    vibzData.push(parseFloat(splitData[5]).toFixed(2));
+
+                    console.log(tempData, humData, soundData, vibzData, vibxData, vibyData);
+
+                    vibChart.data.datasets = [{ 
+                            data: vibxData,
+                            label: "X Axis",
+                            borderColor: "#c45850",
+                            fill: true
+                        }, { 
+                            data: vibyData,
+                            label: "Y Axis",
+                            borderColor: "#e8c3b9",
+                            fill: true
+                        }, { 
+                            data: vibzData,
+                            label: "Z Axis",
+                            borderColor: "#3cba9f",
+                            fill: true
+                        }
+                    ]
+                    vibChart.update(); 
+                    
+                    tempChart.data.datasets = [{ 
+                            data: tempData,
+                            label: "Temperature",
+                            borderColor: "#3e95cd",
+                            fill: true
+                        }, { 
+                            data: humData,
+                            label: "Humidty",
+                            borderColor: "#8e5ea2",
+                            fill: false
+                        }
+                    ];
+                    tempChart.update();
+
+
+                    soundChart.data.datasets =  [{ 
+                        data: soundData,
+                        label: "Sound Data",
+                        borderColor: "#3cba9f",
+                        fill: true
+                    }
+                    ]
+                    soundChart.update();
+                }
+            }
+        }
+
+        var vibChart = new Chart(document.getElementById("line-chart"), {
+            type: 'line',
+            data: {
+                labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+                datasets: [{ 
+                    data: vibxData,
+                    label: "X Axis",
+                    borderColor: "#c45850",
+                    fill: true
+                }, { 
+                    data: vibyData,
+                    label: "Y Axis",
+                    borderColor: "#e8c3b9",
+                    fill: true
+                }, { 
+                    data: vibzData,
+                    label: "Z Axis",
+                    borderColor: "#3cba9f",
+                    fill: true
+                }
+                ]
+            },
+            options: {
+                title: {
+                display: true,
+                text: 'Vibration Data (in m/s2)'
+                }
+            }
+        });
+
+        var tempChart = new Chart(document.getElementById("line-chart2"), {
+            type: 'line',
+            data: {
+                labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+                datasets: [{ 
+                        data: tempData,
+                        label: "Temperature",
+                        borderColor: "#3e95cd",
+                        fill: true
+                    }, { 
+                        data: humData,
+                        label: "Humidty",
+                        borderColor: "#8e5ea2",
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                title: {
+                display: true,
+                text: 'Temperature (in *C)/ Humidty (in %)'
+                }
+            }
+        });
+    
+        var soundChart = new Chart(document.getElementById("line-chart3"), {
+            type: 'line',
+            data: {
+                labels:  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+                datasets: [{ 
+                    data: soundData,
+                    label: "Sound Data",
+                    borderColor: "#3cba9f",
+                    fill: true
+                }
+                ]
+            },
+            options: {
+                title: {
+                display: true,
+                text: 'Sound Data (in dbm)'
+                }
+            }
+        });
+
+    </script>
+    <script>
+
+    
+    </script>
+</body>
+
+</html>
